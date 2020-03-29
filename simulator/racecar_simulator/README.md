@@ -1,9 +1,7 @@
 # Racecar Simulator
 
-This is a lightweight 2D simulator of the UPenn F1/10 Racecar.
+This is a lightweight 2D simulator for F1/10 Racecar. This can be used as a substitute for Gazebo which at times can be hard to launch without crashes.
 It can be built with ROS, or it can be used as a standalone C++ library.
-
-**NOTE:** we are working on more thorough documentation, but for now please read this document.
 
 ## ROS
 
@@ -22,16 +20,11 @@ You can install them by running:
 
 The full list of dependencies can be found in the ```package.xml``` file.
 
-### Installation
-
-To install the simulator package, clone it into your catkin workspace:
-
-    cd ~/catkin_ws/src
-    git clone https://github.com/mlab-upenn/racecar_simulator.git
+### Build package
     
-Then run ```catkin_make``` to build it:
+Run ```catkin_make``` to build it:
 
-    cd ~/catkin_ws
+    cd ~/f110_ws
     catkin_make
     source devel/setup.bash
 
@@ -42,6 +35,8 @@ To run the simulator on its own, run:
     roslaunch racecar_simulator simulator.launch
 
 This will launch everything you need for a full simulation; roscore, the simulator, a preselected map, a model of the racecar and the joystick server.
+
+You can make your own 2d occupancy gridmap and load it in the simulator by inserting that into maps folder and linking that file in the simulator.launch file.
 
 To manually control the car using a keyboard, use the standard WASD buttons for acceleration and steering, and pressing the space bar will bring the car to a halt.
 If you are using a joystick, make sure the correct axis is set in ```params.yaml``` for steering and acceleration- this changes between different joysticks
@@ -166,8 +161,5 @@ The parameters listed below can be modified in the ```params.yaml``` file.
 
 ```joy_button_idx```: The index of the joystick button used to turn on/off joystick driving.
 
-## C++ API
-
-## Implementation Details
 
 

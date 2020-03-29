@@ -40,9 +40,14 @@ The generated devel and build folders at the root of the workspace are where the
 $ source devel/setup.bash
 ```
 
-You can now run a launch file using the following. 
+You can now run any launch file in the following manner. 
 ```bash
 $ roslaunch gap_finding gap_finding_sim.launch
+```
+
+To run the simulator on its own, run:
+```bash
+$ roslaunch racecar_simulator simulator.launch
 ```
 
 TROUBLESHOOTING
