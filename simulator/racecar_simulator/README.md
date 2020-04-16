@@ -46,6 +46,7 @@ If you are using a joystick, make sure the correct axis is set in ```params.yaml
 With the simulator running, open rviz.
 In the left panel at the bottom click the "Add" button, then in the "By topic" tab add the ```/map``` topic and the ```/scan``` topic.
 Then in the "By display type" tab add the RobotModel type.
+[If you get "missing URDF" error make sure you are selecting racecar/robot_description for this setting.]
 In the left panel under the newly added LaserScan section, change the size to 0.1 meters for a clearer visualization of the lidar (shown in rainbow).
 
 You can use a keyboard or USB joystick to drive the car around, or you can place the car manually by clicking the "2D Pose Estimate button" on the top of the screen and dragging your mouse on the desired pose.
