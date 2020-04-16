@@ -9,8 +9,7 @@ publisher = rospy.Publisher('/visualization_gap_finding', Marker, queue_size="1"
 
 # Input data is Vector3 representing center of largest gap
 def callback(data):
-    while not rospy.is_shutdown():
-        marker = Marker()
+    marker = Marker()
 
 # Specify the frame in which to interpret the x,y,z coordinates. It is the laser frame.
     marker.header.frame_id = "/laser"
