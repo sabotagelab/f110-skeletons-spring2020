@@ -13,7 +13,7 @@ drive_pub = rospy.Publisher('drive_parameters', drive_param, queue_size=1)
 gap_center_pub = rospy.Publisher("gap_center", Vector3, queue_size=1)
 
 #Implement your own message to publish relevant information about gaps
-gaps_pub = rospy.Publisher("gaps", <your message type>, queue_size=1)
+# gaps_pub = rospy.Publisher("gaps", <your message type>, queue_size=1)
 
 # Callback that receives LIDAR data on the /scan topic.
 # data: the LIDAR data, published as sensor_msgs::LaserScan
