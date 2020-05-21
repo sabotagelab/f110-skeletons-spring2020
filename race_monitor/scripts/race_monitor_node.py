@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import time
 import csv
@@ -44,7 +45,7 @@ class RaceMonitor:
         self.start_time = 0
         self.num_laps =0
         self.num_collisions = 0
-        self.RACE_TIME= 30.0        #600 seconds = 10 minutes
+        self.RACE_TIME= 600.0        #600 seconds = 10 minutes
         self.c1_line = [Point(12.06,-10.42,0),Point(14.75,-10.5, 0.0)]
         self.c2_line = [Point(0.82, -10.65, 0.0),Point(1.97, -13.09, 0)]
         self.c3_line = [Point(-19.69, -27.61, 0.0),Point(-17.94, -29.6, 0)]
