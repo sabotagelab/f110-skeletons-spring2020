@@ -32,6 +32,9 @@ private:
     // Publisher for mux controller
     ros::Publisher mux_pub;
 
+    //Publisher for collisions 
+    ros::Publisher collision_pub;
+
     // Mux indices
     int joy_mux_idx;
     int key_mux_idx;
@@ -102,6 +105,9 @@ public:
 
         // Make a publisher for mux messages
         mux_pub = n.advertise<std_msgs::Int32MultiArray>(mux_topic, 10);
+
+        //Make a publisher for collision message
+        collision_pub = n.advertise<std_msgs::Bool>("/collision_status",1);
 
         // Start subscribers to listen to laser scan, joy, IMU, and odom messages
         laser_sub = n.subscribe(scan_topic, 1, &BehaviorController::laser_callback, this);
@@ -200,6 +206,7 @@ public:
         // turn on desired controller
         mux_controller[controller_idx] = true;
 
+
         publish_mux();
     }
 
@@ -214,7 +221,7 @@ public:
                 double ttc = (msg.ranges[i] - car_distances[i]) / proj_velocity;
 
                 // if it's small, there's a collision
-                if ((ttc < ttc_threshold) && (ttc >= 0.0)) { 
+                if ((ttc < ttc_threshold) && (ttc >= 0.0) &&(!in_collision)) { 
                     // Send a blank mux and write to file
                     collision_helper();
 
@@ -243,7 +250,9 @@ public:
         for (int i = 0; i < mux_size; i++) {
             mux_controller[i] = false;
         }
-
+        std_msgs::Bool col_data;
+        col_data.data = true;
+        collision_pub.publish(col_data);
         publish_mux();
     }
 

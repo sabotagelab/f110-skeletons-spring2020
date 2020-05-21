@@ -5,7 +5,7 @@ wheelbase: 0.3302 # meters
 width: 0.2032 # meters
 
 # Limits on the speed and steering angle
-max_speed: 4. #  meters/second
+max_speed: 10. #  meters/second
 max_steering_angle: 0.4189 # radians
 max_accel: 3. # meters/second^2
 max_decel: 20 # meters/second^2

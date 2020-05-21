@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node name="race_monitor_node" pkg="race_monitor" type="race_monitor_node.py" output="screen" />
+</launch>
