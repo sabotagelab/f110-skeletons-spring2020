@@ -113,6 +113,8 @@ class RaceMonitor:
         pose_info.pose.pose.position = self.reset_checkpoints_list[self.last_checkpoint]
         pose_info.pose.pose.orientation = self.heading(self.checkpoints_orientation_list[self.last_checkpoint])
         self.pose_pub.publish(pose_info)
+        rospy.sleep(0.1)
+        self.pose_pub.publish(pose_info)
         self.restart_car_pub.publish(Bool(True))
 
     def check_line_cross_with_crossproduct(self,point,line_p1,line_p2):
