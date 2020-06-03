@@ -6,20 +6,18 @@ from itertools import izip_longest
 import rospy
 from geometry_msgs.msg import Point, Quaternion,PoseWithCovarianceStamped
 from nav_msgs.msg import  Odometry
-from std_msgs.msg import Duration, Header, String,Bool
+from std_msgs.msg import Duration, Header, String,Bool,ColorRGBA
 from tf.transformations import quaternion_from_euler,euler_from_quaternion
+from visualization_msgs.msg import Marker
 from race_monitor.msg import RaceStats
 
 
 class RaceMonitor:
     def __init__(self):
         rospy.init_node("race_monitor_node")
-        cmd_vel_topic = rospy.get_param('cmd_vel_topic_name', '/nav')
         odom_topic = rospy.get_param('odom_topic_name', '/odom')
         key_topic = rospy.get_param('key_topic_name', '/key')
         self.car_frame = rospy.get_param('car_frame', 'base_link')
-        self.GOAL_THRESHOLD = rospy.get_param('goal_threshold', 0.50)
-        self.DEBUG_MODE = rospy.get_param('debug_mode', True)
 
         self.L = rospy.get_param('car_length', 0.325)
         self.lap_count = 0
@@ -45,7 +43,7 @@ class RaceMonitor:
         self.start_time = 0
         self.num_laps =0
         self.num_collisions = 0
-        self.RACE_TIME= 600.0        #600 seconds = 10 minutes
+        self.RACE_TIME= rospy.get_param('race_time', 5)*60.0        #race time in minutes
         self.c1_line = [Point(12.06,-10.42,0),Point(14.75,-10.5, 0.0)]
         self.c2_line = [Point(0.82, -10.65, 0.0),Point(1.97, -13.09, 0)]
         self.c3_line = [Point(-19.69, -27.61, 0.0),Point(-17.94, -29.6, 0)]
@@ -62,6 +60,7 @@ class RaceMonitor:
         self.reset_pub = rospy.Publisher("reset_checkpoint", String, queue_size=1)
         self.pose_pub = rospy.Publisher("initialpose",PoseWithCovarianceStamped,queue_size=1)
         self.race_stats_pub = rospy.Publisher("race_stats",RaceStats,queue_size=1)
+        self.time_marker_pub = rospy.Publisher("time_marker",Marker,queue_size=1)
 
         # Subscribers
         rospy.Subscriber(odom_topic, Odometry, self.odom_callback, queue_size=1)
@@ -85,7 +84,7 @@ class RaceMonitor:
         self.max_vel = max(self.max_vel,self.current_vel)
         if not self.ODOM_INIT:
             self.ODOM_INIT = True
-            print("10 minutes of Race time started..")
+            print(str(self.RACE_TIME/60.0)+" minutes of Race time started..")
             self.start_time = time.time()
 
     def collision_callback(self,msg):
@@ -121,22 +120,26 @@ class RaceMonitor:
         line_vector = Point(line_p2.x-line_p1.x,line_p2.y-line_p1.y,0)
         point_vector = Point(point.x-line_p1.x,point.y-line_p1.y,0)
         cross_product= (point_vector.x*line_vector.y)-(point_vector.y*line_vector.x)
-        if cross_product>0:
-            return True
-        else:
-            return False
+        return (cross_product>0)
 
     def check_car_start(self):
-        if self.check_line_cross_with_crossproduct(self.current_pose,self.home_line[0],self.home_line[1]):
-            return True
-        else:
-            return False
+        return self.check_line_cross_with_crossproduct(self.current_pose,self.home_line[0],self.home_line[1])
 
+    def publish_time_marker(self):
+        time_marker = Marker()
+        time_marker.header = self.create_header(self.car_frame)
+        time_marker.type = time_marker.TEXT_VIEW_FACING
+        curr_time = time.time()-self.start_time
+        time_marker.text = str(int(curr_time/60))+':'+str(int(curr_time%60))
+        time_marker.pose.position = Point(-2.5,0.0,0.0)
+        time_marker.scale = Point(2.0,2.0,1.0)
+        time_marker.color = ColorRGBA(0.0,0.1,1.0,1.0)
+        self.time_marker_pub.publish(time_marker)
 
     def publish_stats(self,event):
         if self.CAR_START:
             stats_msg = RaceStats()
-            stats_msg.header = self.create_header('base_link')
+            stats_msg.header = self.create_header(self.car_frame)
             if self.lap_times ==[]:
                 stats_msg.lap_times = [0]
             else:
@@ -146,6 +149,7 @@ class RaceMonitor:
             stats_msg.number_collisions = self.num_collisions
             stats_msg.number_laps = self.num_laps
             self.race_stats_pub.publish(stats_msg)
+            self.publish_time_marker()
             if(time.time()-self.start_time>=self.RACE_TIME):
                 print("Race time completed. Writing stats to file.")
                 self.last_checkpoint =0

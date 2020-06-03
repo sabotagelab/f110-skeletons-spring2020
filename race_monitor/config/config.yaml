@@ -1,0 +1,2 @@
+race_time: 5    #race time in minutes
+stats_frequency: 100 #publishing frequency for race stats

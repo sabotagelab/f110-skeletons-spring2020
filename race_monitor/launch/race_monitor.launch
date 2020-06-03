@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
+    <arg name="race_monitor_config" default="$(find race_monitor)/config/config.yaml" />
+    <rosparam file="$(arg race_monitor_config)" command="load"/>
     <node name="race_monitor_node" pkg="race_monitor" type="race_monitor_node.py" output="screen" />
 </launch>
