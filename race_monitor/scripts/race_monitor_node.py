@@ -144,7 +144,7 @@ class RaceMonitor:
                 stats_msg.lap_times = [0]
             else:
                 stats_msg.lap_times = self.lap_times
-            stats_msg.fastest_lap_time = max(stats_msg.lap_times)
+            stats_msg.fastest_lap_time = min(stats_msg.lap_times)
             stats_msg.top_speed = self.max_vel
             stats_msg.number_collisions = self.num_collisions
             stats_msg.number_laps = self.num_laps
